@@ -1,29 +1,41 @@
-const express = require("express");
+import express from "express";
+import cors from "cors";
+import path from "path";
+import dotenv from "dotenv";
+import connectDB from "./db/db.js";
+import mongoose from "mongoose";
+import bodyParser from "body-parser";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+import userRoutes from "./routes/userRoutes.js"
+import adminRoutes from "./routes/adminRoutes.js"
 
-const app = express();
-const cors = require("cors");
+dotenv.config();
 
-// load config from env File
-require("dotenv").config();
 const Port = process.env.PORT || 6500;
-
-// middleware to parse json request
+const app = express();
 
 app.use(express.json());
 app.use(cors());
 
-const bodyParser = require("body-parser");
 app.use(bodyParser.json());
-const mongoose = require("mongoose");
 
-app.listen(Port, () => {
-  console.log("App is listening at port no ", Port);
+// Database connection
+connectDB();
+
+app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/admin", adminRoutes);
+
+// Error handling
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: "Something went wrong!" });
 });
 
-// db connection
-
-// const dbConnect = require("./config/database");
-// dbConnect();
+// Start server
+app.listen(Port, () => {
+  console.log(`Server started on http://localhost:${Port}`);
+});
 
 //set default route
 app.get("/", (req, res) => {
