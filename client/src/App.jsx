@@ -13,6 +13,13 @@ function App() {
       <h1 className="bg-green-500">hello</h1>
       <h1 className="bg-green-500">hello</h1>
       <h1 className="bg-green-500">hello</h1>
+      <h1 className="bg-green-500">hello</h1>
+      <h1 className="bg-green-500">hello</h1>
+      <h1 className="bg-green-500">hello</h1>
+      <h1 className="bg-green-500">hello</h1>
+      <h1 className="bg-green-500">hello</h1>
+      <h1 className="bg-green-500">hello</h1>
+      <h1 className="bg-green-500">hello</h1>
     </>
   );
 }
