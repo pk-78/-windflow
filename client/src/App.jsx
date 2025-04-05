@@ -1,25 +1,23 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
+// Ad
+
+import AdminLogin from "./Admin/pages/AdminLogin";
+import LoginPage from "./Admin/pages/AdminLogin";
+import AdminSignupPage from "./Admin/pages/AdminSignUp";
+import UserLogin from "./User/Page/UserLogin";
+import UserSignupPage from "./User/Page/UserSignUp";
+
+
+
 
 function App() {
-  const [count, setCount] = useState(0);
+  
 
   return (
     <>
-      <h1 className="bg-green-500">hello</h1>
-      <h1 className="bg-green-500">hello</h1>
-      <h1 className="bg-green-500">hello</h1>
-      <h1 className="bg-green-500">hello</h1>
-      <h1 className="bg-green-500">hello</h1>
-      <h1 className="bg-green-500">hello</h1>
-      <h1 className="bg-green-500">hello</h1>
-      <h1 className="bg-green-500">hello</h1>
-      <h1 className="bg-green-500">hello</h1>
-      <h1 className="bg-green-500">hello</h1>
-      <h1 className="bg-green-500">hello</h1>
-      <h1 className="bg-green-500">hello</h1>
+     <AdminLogin/>
+     <AdminSignupPage/>
+     <UserSignupPage/>
+     <UserLogin/>
     </>
   );
 }
