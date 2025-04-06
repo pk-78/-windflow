@@ -1,16 +1,21 @@
 //UserLogin page
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 
 export default function UserLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate()
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Email:', email);
     console.log('Password:', password);
     // You can add your login logic here (API call, validation, etc.)
+    toast.success('Login successful!'); // Example toast notification
+    navigate("/home")
   };
 
   const handleSignUpClick = () => {

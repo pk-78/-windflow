@@ -1,6 +1,7 @@
 // UserSignUp page
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function UserSignupPage() {
   const [formData, setFormData] = useState({
@@ -10,10 +11,12 @@ export default function UserSignupPage() {
     password: '',
     confirmPassword: '',
   });
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    console.log(formData.name)
   };
 
   const handleSubmit = (e) => {
@@ -120,7 +123,7 @@ export default function UserSignupPage() {
           <p className="text-sm text-gray-600">
             Already have an account?{' '}
             <button
-              onClick={handleSignInClick}
+              onClick={()=>{navigate("/userLogin")}}
               className="text-blue-600 font-medium hover:underline"
             >
               Sign in
