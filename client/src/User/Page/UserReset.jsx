@@ -1,28 +1,34 @@
-import React, { useState } from 'react';
+import axios from "axios";
+import React, { useState } from "react";
+import url from "../../url/url";
+import toast from "react-hot-toast";
 
 const UserReset = () => {
-  const [oldPassword, setOldPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const id = localStorage.getItem("id");
+  console.log(id);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!oldPassword || !newPassword || !confirmPassword) {
-      alert("Please fill in all fields.");
-      return;
+    try {
+      const response = await axios.put(`${url}/api/v1/user/editUser/${id}`, {
+        // name: name,
+        oldPassword: oldPassword,
+        password: newPassword,
+        confirmPassword: confirmPassword,
+      });
+      console.log(response);
+      toast.success(response?.data?.message);
+      // setName("");
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.data?.message || "Something Went Wrong");
     }
-
-    if (newPassword !== confirmPassword) {
-      alert("New passwords do not match.");
-      return;
-    }
-
-    alert("Password changed successfully!");
-    // Reset the fields
-    setOldPassword('');
-    setNewPassword('');
-    setConfirmPassword('');
   };
 
   return (

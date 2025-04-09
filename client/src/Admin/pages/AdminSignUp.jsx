@@ -1,7 +1,11 @@
 
 // AdminSignUp page
 
+import axios from 'axios';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import url from '../../url/url';
+import toast from 'react-hot-toast';
 
 export default function AdminSignupPage() {
   const [formData, setFormData] = useState({
@@ -11,29 +15,35 @@ export default function AdminSignupPage() {
     password: '',
     confirmPassword: '',
   });
+  
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    // Basic password match check
-    if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match!');
-      return;
+    console.log(formData);
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        `${url}/api/v1/admin/adminSignup`,
+        formData
+      );
+
+      console.log(response?.data);
+      toast.success(response?.data?.message);
+      navigate("/adminLogin");
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.data?.message || "Something went wrong");
     }
-
-    // You can send data to your backend here
-    console.log('Form Data:', formData);
+    setLoading(false);
   };
-
-  const handleSignInClick = () => {
-    console.log('Redirect to Sign In page');
-    // Use navigation here if using react-router-dom
-  };
-
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-md">
@@ -116,7 +126,9 @@ export default function AdminSignupPage() {
             type="submit"
             className="w-full bg-red-600 text-white py-2 rounded-xl hover:bg-red-500 transition duration-200"
           >
-            Sign Up
+            <div className="flex justify-center items-center">
+                {loading ? <div class="loader"></div> : "Signup"}
+              </div>
           </button>
         </form>
 
@@ -125,7 +137,7 @@ export default function AdminSignupPage() {
           <p className="text-sm text-gray-600">
             Already have an account?{' '}
             <button
-              onClick={handleSignInClick}
+              onClick={()=>{navigate("/adminLogin")}}
               className="text-blue-600 font-medium hover:underline"
             >
               Sign in

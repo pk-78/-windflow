@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 import Admin from "../models/admin.model.js";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken"
-import dotenv from "dotenv"
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 dotenv.config();
 
 export const adminSignup = async (req, res) => {
@@ -47,7 +47,7 @@ export const adminSignup = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({
-      message: "Something Went Wrong",
+      message: "Something Went Wrong in admin signup",
       success: false,
       error: error.message,
     });
@@ -97,18 +97,17 @@ export const adminLogin = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Internal server error",
+      message: "Internal server error in admin login",
       error: error.message,
     });
   }
 };
 
-
 export const editAdmin = async (req, res) => {
+  const { id } = req.params;
+  const { name, oldPassword, password, confirmPassword } = req.body;
+  console.log(name, oldPassword, password, confirmPassword);
   try {
-    const { id } = req.params;
-    const { name, oldPassword, password, confirmPassword } = req.body;
-
     const admin = await Admin.findById(id);
     if (!admin) {
       return res.status(404).json({
@@ -117,25 +116,23 @@ export const editAdmin = async (req, res) => {
       });
     }
 
-    
-    if (req.body.email ) {
+    if (req.body.email) {
       return res.status(400).json({
         success: false,
         message: "You cannot update email or phone number",
       });
     }
 
-   
     if (name) admin.name = name;
 
     // Update password if oldPassword, new password and confirmPassword are all provided
     if (oldPassword && password && confirmPassword) {
-        if (password !== confirmPassword) {
-            return res.status(400).json({
-              success: false,
-              message: "Password and confirm password do not match",
-            });
-          }
+      if (password !== confirmPassword) {
+        return res.status(400).json({
+          success: false,
+          message: "Password and confirm password do not match",
+        });
+      }
       const isMatch = await bcrypt.compare(oldPassword, admin.password);
       if (!isMatch) {
         return res.status(400).json({
@@ -143,8 +140,6 @@ export const editAdmin = async (req, res) => {
           message: "Old password is incorrect",
         });
       }
-
-      
 
       const hashedPassword = await bcrypt.hash(password, 10);
       admin.password = hashedPassword;
@@ -163,7 +158,7 @@ export const editAdmin = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Internal server error",
+      message: "Internal server error in edit admin",
       error: error.message,
     });
   }
