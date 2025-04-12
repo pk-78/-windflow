@@ -14,6 +14,7 @@ import AdminHomePage from "./Admin/pages/AdminHomePage";
 import ViewOrder from "./Admin/pages/ViewOrder";
 import AddProduct from "./Admin/pages/AddProduct";
 import AllProduct from "./Admin/pages/AllProduct";
+import EditProduct from "./Admin/pages/EditProduct";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
         <Route path="/viewOrder/:id" element={<ViewOrder />} />
         <Route path="/addProduct" element={<AddProduct />} />
         <Route path="/allProduct" element={<AllProduct />} />
+        <Route path="/editProduct/:id" element={<EditProduct />} />
       </Routes>
     </>
   );

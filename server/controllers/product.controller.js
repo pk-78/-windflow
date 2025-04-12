@@ -81,3 +81,48 @@ export const getProductById = async (req, res) => {
     });
   }
 };
+
+export const editProduct = async (req, res) => {
+  const { name, originalPrice, category, stock } = req.body;
+  const { id } = req.params;
+
+  try {
+    const product = await Product.findById(id);
+    if (!product) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
+    }
+
+    // Update fields
+    product.name = name || product.name;
+    product.originalPrice = originalPrice || product.originalPrice;
+    product.category = category || product.category;
+    product.stock = stock || product.stock;
+
+    // Update mainImage if provided
+    const mainImageUrl = req.files?.["mainImage"]?.[0]?.path;
+    if (mainImageUrl) {
+      product.mainImage = { url: mainImageUrl };
+    }
+
+    // Update multiple images if provided
+    const images = req.files?.["images"] || [];
+    if (images.length > 0) {
+      product.images = images.map((file) => ({ url: file.path }));
+    }
+
+    await product.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Product updated successfully",
+      product,
+    });
+  } catch (err) {
+    console.error("Edit product error:", err);
+    res
+      .status(500)
+      .json({ success: false, error: "Server error while updating product" });
+  }
+};
