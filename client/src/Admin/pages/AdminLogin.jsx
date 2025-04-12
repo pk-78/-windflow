@@ -29,7 +29,7 @@ export default function AdminLogin() {
       // console.log(token);
       localStorage.setItem("id", admin.id);
       localStorage.setItem("token", token);
-      navigate(`/adminHome/${admin?.id}`);
+      navigate(`/adminHome`);
     } catch (error) {
       console.log(error);
       toast.error(error?.response?.data?.message || "Something went wrong");

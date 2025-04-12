@@ -15,9 +15,9 @@ const Navbar = () => {
 
       {/* Navigation Links */}
       <ul className="hidden md:flex space-x-6 text-gray-700 font-large">
-        <li className="hover:text-red-500 cursor-pointer">Home</li>
-        <li className="hover:text-red-500 cursor-pointer">Bag</li>
-        <li className="hover:text-red-500 cursor-pointer">Watch</li>
+        <li onClick={()=>{navigate("/adminHome")}} className="hover:text-red-500 cursor-pointer">Home</li>
+        <li onClick={()=>{navigate("/addProduct")}} className="hover:text-red-500 cursor-pointer">Add Product</li>
+        <li onClick={()=>{navigate("/allProduct")}} className="hover:text-red-500 cursor-pointer">All Product</li>
         <li onClick={()=>{navigate("/adminReset")}} className="hover:text-red-500 cursor-pointer">Setting</li>
       </ul>
 

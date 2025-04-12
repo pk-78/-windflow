@@ -11,6 +11,9 @@ import UserSignupPage from "./User/Page/UserSignUp";
 import UserHomePage from "./User/Page/UserHomePage";
 import { Toaster } from "react-hot-toast";
 import AdminHomePage from "./Admin/pages/AdminHomePage";
+import ViewOrder from "./Admin/pages/ViewOrder";
+import AddProduct from "./Admin/pages/AddProduct";
+import AllProduct from "./Admin/pages/AllProduct";
 
 function App() {
   return (
@@ -18,14 +21,21 @@ function App() {
       <Navbar />
       <Toaster />
       <Routes>
-        <Route path="/adminLogin" element={<AdminLogin />} />
         <Route path="/userLogin" element={<UserLogin />} />
-        <Route path="/adminSignup" element={<AdminSignupPage />} />
+
         <Route path="/userSignup" element={<UserSignupPage />} />
-        <Route path="/adminReset" element={<AdminReset />} />
+
         <Route path="/userReset" element={<UserReset />} />
         <Route path="/home/:id" element={<UserHomePage />} />
-        <Route path="/adminHome/:id" element={<AdminHomePage />} />
+      </Routes>
+      <Routes>
+        <Route path="/adminLogin" element={<AdminLogin />} />
+        <Route path="/adminSignup" element={<AdminSignupPage />} />
+        <Route path="/adminReset" element={<AdminReset />} />
+        <Route path="/adminHome" element={<AdminHomePage />} />
+        <Route path="/viewOrder/:id" element={<ViewOrder />} />
+        <Route path="/addProduct" element={<AddProduct />} />
+        <Route path="/allProduct" element={<AllProduct />} />
       </Routes>
     </>
   );

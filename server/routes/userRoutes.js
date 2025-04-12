@@ -1,5 +1,5 @@
 import express from "express"
-import { addToCart, changeOrderStatus, editUser, getAllOrders, orderProduct, updateAddress, userLogin, userSignup } from "../controllers/user.controller.js"
+import { addToCart, cancelOrder,  editUser, getAllOrders, orderProduct, updateAddress, userLogin, userSignup } from "../controllers/user.controller.js"
 
 
 const router= express.Router()
@@ -11,7 +11,7 @@ router.post("/userLogin", userLogin)
 router.post("/addToCart/:id", addToCart)
 router.post("/orderProduct/:id", orderProduct)
 router.get("/getAllOrders/:id", getAllOrders)
-router.post("/changeOrderStatus/:id",changeOrderStatus )
+router.post("/cancelOrder/:id",cancelOrder )
 
 export default router;
 

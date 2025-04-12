@@ -3,6 +3,7 @@ import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import Order from "../models/orders.model.js";
 dotenv.config();
 
 export const userSignup = async (req, res) => {
@@ -277,10 +278,11 @@ export const addToCart = async (req, res) => {
   }
 };
 
+
+
 export const orderProduct = async (req, res) => {
   const { id } = req.params;
-
-  const { productId, quantity, orderStatus } = req.body;
+  const { productId, quantity } = req.body;
 
   try {
     if (!productId || !quantity) {
@@ -289,29 +291,45 @@ export const orderProduct = async (req, res) => {
         message: "Product ID and quantity are required",
       });
     }
-    const updateUser = await User.findByIdAndUpdate(
-      id,
-      {
-        $push: {
-          orders: {
-            productId,
-            quantity,
-            orderStatus,
-          },
-        },
-      },
-      { new: true }
-    );
+
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required",
+      });
+    }
+
+    // Create new order
+    const newOrder = new Order({
+      customerId: id,
+      productId,
+      quantity,
+      orderstatus: "pending",
+    });
+
+    await newOrder.save();
+
+    // Find user and push order ID
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    user.orders.push(newOrder._id);
+    await user.save();
 
     return res.status(200).json({
       success: true,
-      message: "Product is added to cart",
-      updateUser,
+      message: "Product ordered successfully",
+      order: newOrder,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(500).json({
-      message: "Something went wrong in add To Cart",
+      message: "Something went wrong while ordering product",
       error: error.message,
     });
   }
@@ -342,10 +360,10 @@ export const getAllOrders = async (req, res) => {
     });
   }
 };
-export const changeOrderStatus = async (req, res) => {
+export const cancelOrder = async (req, res) => {
   const { id } = req.params;
   const { productId, status } = req.body;
-  console.log(status)
+  console.log(status);
   try {
     const user = await User.findById(id);
     if (!user) {
@@ -362,7 +380,7 @@ export const changeOrderStatus = async (req, res) => {
     }
 
     const filterProduct = user.orders.filter(
-      (singleProduct) => singleProduct._id !== productId
+      (singleProduct) => singleProduct.productId !== productId
     );
     filterProduct[0].orderStatus = status;
 
@@ -372,8 +390,7 @@ export const changeOrderStatus = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "found successfuly",
-      order: user.orders
-
+      order: user.orders,
     });
   } catch (error) {
     console.log("change order status", error);
