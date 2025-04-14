@@ -9,6 +9,8 @@ import { dirname } from "path";
 import { fileURLToPath } from "url";
 import userRoutes from "./routes/userRoutes.js"
 import adminRoutes from "./routes/adminRoutes.js"
+import productRoutes from "./routes/productRoutes.js"
+
 
 dotenv.config();
 
@@ -25,6 +27,7 @@ connectDB();
 
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/admin", adminRoutes);
+app.use("/api/v1/product", productRoutes)
 
 // Error handling
 app.use((err, req, res, next) => {

@@ -2,9 +2,14 @@ import React from 'react';
 import { FaCartPlus } from "react-icons/fa";
 import { FiLogIn } from "react-icons/fi";
 import { MdAdminPanelSettings } from "react-icons/md";
+
 import { Link } from "react-router-dom"; // <-- Import this
 
+import { useNavigate } from 'react-router-dom';
+
+
 const Navbar = () => {
+  const navigate = useNavigate();
   return (
     <nav className="bg-white shadow-md px-6 py-4 flex justify-between items-center">
       {/* Logo */}
@@ -13,10 +18,18 @@ const Navbar = () => {
       </div>
 
       {/* Navigation Links */}
+
       <ul className="hidden md:flex space-x-6 text-gray-700 font-bold">
         <li className="hover:text-red-500 cursor-pointer">Home</li>
         <li className="hover:text-red-500 cursor-pointer">Bag</li>
         <li className="hover:text-red-500 cursor-pointer">Watch</li>
+
+      <ul className="hidden md:flex space-x-6 text-gray-700 font-large">
+        <li onClick={()=>{navigate("/adminHome")}} className="hover:text-red-500 cursor-pointer">Home</li>
+        <li onClick={()=>{navigate("/addProduct")}} className="hover:text-red-500 cursor-pointer">Add Product</li>
+        <li onClick={()=>{navigate("/allProduct")}} className="hover:text-red-500 cursor-pointer">All Product</li>
+        <li onClick={()=>{navigate("/adminReset")}} className="hover:text-red-500 cursor-pointer">Setting</li>
+
       </ul>
 
       {/* Right Side Icons */}

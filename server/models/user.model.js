@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    
+
     phone: {
       type: String,
       required: true,
@@ -40,12 +40,8 @@ const userSchema = new mongoose.Schema(
     ],
     orders: [
       {
-        orderId: { type: mongoose.Schema.Types.ObjectId, ref: "Order" },
-        status: {
-          type: String,
-          enum: ["pending", "shipped", "delivered", "cancelled"],
-          default: "pending",
-        },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Order",
       },
     ],
   },
