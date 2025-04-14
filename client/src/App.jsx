@@ -1,6 +1,5 @@
-// Ad
-
-import { Route, Routes } from "react-router-dom";
+import React from "react";
+import { Routes, Route } from "react-router-dom";
 import AdminLogin from "./Admin/pages/AdminLogin";
 import AdminReset from "./Admin/pages/AdminReset";
 import AdminSignupPage from "./Admin/pages/AdminSignUp";
@@ -10,6 +9,10 @@ import UserReset from "./User/Page/UserReset";
 import UserSignupPage from "./User/Page/UserSignUp";
 import UserHomePage from "./User/Page/UserHomePage";
 import { Toaster } from "react-hot-toast";
+
+import ProductDetail from "./User/Page/ProductDetail";
+import Cart from "./User/Page/Cart"; // <-- Make sure to import your Cart page
+
 import AdminHomePage from "./Admin/pages/AdminHomePage";
 import ViewOrder from "./Admin/pages/ViewOrder";
 import AddProduct from "./Admin/pages/AddProduct";
@@ -40,6 +43,7 @@ function App() {
         <Route path="/editProduct/:id" element={<EditProduct />} />
       </Routes>
     </>
+
   );
 }
 
