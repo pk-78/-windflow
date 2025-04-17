@@ -2,6 +2,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ProductCard from "../components/ProductCard";
 import url from "../../url/url";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setPendingOrders,
+  setShippedOrders,
+  setDeliveredOrders,
+  setCancelledOrders,
+} from "../../redux/productSlice";
 
 const statusOptions = ["pending", "shipped", "cancelled", "delivered"];
 
@@ -11,57 +18,64 @@ const statusColors = {
   cancelled: "bg-red-100 border-red-400 text-red-700",
   delivered: "bg-green-100 border-green-400 text-green-700",
 };
+
 export default function AdminHomePage() {
-  const [orders, setOrders] = useState({
-    pending: [],
-    shipped: [],
-    cancelled: [],
-    delivered: [],
-  });
+  const dispatch = useDispatch();
+
+  const {pendingOrders, shippedOrders,deliveredOrders,cancelledOrders,allProduct} = useSelector((state) => state.product);
+
 
   const [status, setStatus] = useState("pending");
 
   useEffect(() => {
     const getOrders = async () => {
-      console.log(`${url}/api/v1/admin/orders/${status}Orders`);
       try {
         const response = await axios.get(
           `${url}/api/v1/admin/orders/${status}Orders`
         );
-        console.log(response?.data?.orders);
 
-        // Dynamically update the specific status array
-        setOrders((prevOrders) => ({
-          ...prevOrders,
-          [status]: response?.data?.orders,
-        }));
+        const orders = response?.data?.orders || [];
+
+        switch (status) {
+          case "pending":
+            dispatch(setPendingOrders(orders));
+            break;
+          case "shipped":
+            dispatch(setShippedOrders(orders));
+            break;
+          case "delivered":
+            dispatch(setDeliveredOrders(orders));
+            break;
+          case "cancelled":
+            dispatch(setCancelledOrders(orders));
+            break;
+          default:
+            console.warn("Unknown status:", status);
+        }
       } catch (error) {
-        console.log(error);
+        console.error("Failed to fetch orders:", error);
       }
     };
 
     getOrders();
-  }, [status]);
+  }, [status, dispatch]);
 
-  const fetchOrders = async () => {
-    try {
-      for (const stat of statusOptions) {
-        const { data } = await axios.get(`/api/orders/${stat}`);
-        setOrders((prev) => ({
-          ...prev,
-          [stat]: data.orders || [],
-        }));
-      }
-    } catch (error) {
-      console.error("Failed to fetch orders", error);
+  const getCurrentOrders = () => {
+    switch (status) {
+      case "pending":
+        return pendingOrders;
+      case "shipped":
+        return shippedOrders;
+      case "delivered":
+        return deliveredOrders;
+      case "cancelled":
+        return cancelledOrders;
+      default:
+        return [];
     }
   };
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
-  const selectedOrders = orders[status] || [];
+  const currentOrders = getCurrentOrders();
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6 md:p-8">
@@ -90,9 +104,9 @@ export default function AdminHomePage() {
           {status} Orders
         </h2>
 
-        {orders[status]?.length > 0 ? (
+        {currentOrders?.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {orders[status].map((order) => (
+            {currentOrders.map((order) => (
               <ProductCard key={order._id} order={order} />
             ))}
           </div>

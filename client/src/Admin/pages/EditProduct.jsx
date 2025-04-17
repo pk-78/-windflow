@@ -177,7 +177,7 @@ export default function EditProduct() {
               type="file"
               accept="image/*"
               onChange={handleMainImageChange}
-              required
+              
               className="block w-full text-sm text-gray-100 bg-green-500 p-2 rounded-md cursor-pointer"
             />
             {mainImagePreview && (

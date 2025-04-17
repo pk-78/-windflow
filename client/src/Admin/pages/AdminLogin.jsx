@@ -29,6 +29,7 @@ export default function AdminLogin() {
       // console.log(token);
       localStorage.setItem("id", admin.id);
       localStorage.setItem("token", token);
+      localStorage.setItem("role", admin.role)
       navigate(`/adminHome`);
     } catch (error) {
       console.log(error);

@@ -126,3 +126,5 @@ export const editProduct = async (req, res) => {
       .json({ success: false, error: "Server error while updating product" });
   }
 };
+
+

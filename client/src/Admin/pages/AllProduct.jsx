@@ -1,27 +1,19 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import url from "../../url/url";
-import toast from "react-hot-toast";
+
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+
+import useGetAllProduct from "../../hooks/useGetAllProduct";
 
 export default function AllProduct() {
-  const [allProduct, setAllProduct] = useState([]);
+    const dispatch = useDispatch()
   const navigate = useNavigate();
+  
+  const { allProduct } = useSelector((state) => state.product);
 
-  useEffect(() => {
-    const fetchAllProduct = async () => {
-      try {
-        const response = await axios.get(`${url}/api/v1/product/getAllProduct`);
-        setAllProduct(response?.data?.products || []);
-        toast.success("Products Fetched Successfully");
-      } catch (error) {
-        console.log(error);
-        toast.error("Something Went Wrong Please Try Again Later");
-      }
-    };
 
-    fetchAllProduct();
-  }, []);
+    useGetAllProduct(dispatch);
 
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-6 sm:px-6 md:px-10">

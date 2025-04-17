@@ -1,30 +1,92 @@
-import React, { useState } from 'react';
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import url from "../../url/url";
+import toast from "react-hot-toast";
 
 const ProductDetail = () => {
-  const [selectedSize, setSelectedSize] = useState('M');
+  const [selectedSize, setSelectedSize] = useState("M");
+  const [product, setProduct] = useState(null);
+  const { id } = useParams();
+  const [inCart, setInCart] = useState(false);
+  const navigate = useNavigate();
 
-  const sizes = ['S', 'M', 'L', 'XL', 'XXL'];
+  const userId = localStorage.getItem("id");
+
+  const sizes = ["S", "M", "L", "XL", "XXL"];
+
+  useEffect(() => {
+    const getProduct = async () => {
+      try {
+        const response = await axios.get(
+          `${url}/api/v1/product/getproduct/${id}`
+        );
+        setProduct(response?.data?.product);
+        console.log(response);
+        toast.success("Detail Fetch Successfully");
+      } catch (error) {
+        console.log(error);
+        toast.error("Something went wrong please try again");
+      }
+    };
+
+    const getUserDetail = async () => {
+      try {
+        const response = await axios.get(
+          `${url}/api/v1/user/getCart/${userId}`
+        );
+        console.log(response.data);
+        const cartItem = response?.data?.cartItem;
+
+        setInCart(cartItem.some((item) => item.productId === id));
+        
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getProduct();
+    getUserDetail();
+  }, []);
+
+  const addToCart = async () => {
+    try {
+      const response = await axios.post(
+        `${url}/api/v1/user/addToCart/${userId}`,
+        {
+          productId: id,
+        }
+      );
+
+      console.log(response?.data?.message);
+      setInCart(true);
+      toast.success("Item added to cart" || response?.data?.message);
+    } catch (error) {
+      console.log(error);
+      toast.error("something went wrong ");
+    }
+  };
+  // console.log(id);
+  // console.log(userId);
+  console.log(inCart);
 
   return (
     <div className="flex flex-col lg:flex-row gap-10 p-6 lg:p-16 bg-white">
       {/* Left Images */}
       <div className="flex flex-col items-center gap-4">
-        {Array(4)
-          .fill('')
-          .map((_, i) => (
-            <img
-              key={i}
-              src="/bag8Img.png"
-              alt={`bag-thumb-${i}`}
-              className="w-16 h-16 object-contain border rounded"
-            />
-          ))}
+        {product?.images?.map((img, i) => (
+          <img
+            key={img._id || i}
+            src={img.url}
+            alt={`product-thumb-${i}`}
+            className="w-16 h-16 object-contain border rounded"
+          />
+        ))}
       </div>
 
       {/* Main Image */}
       <div className="flex justify-center items-center flex-1">
         <img
-          src="/bag8Img.png"
+          src={product?.mainImage?.url}
           alt="main bag"
           className="w-[350px] md:w-[450px] lg:w-[500px] object-contain"
         />
@@ -32,7 +94,7 @@ const ProductDetail = () => {
 
       {/* Product Info */}
       <div className="flex flex-col flex-1 gap-4">
-        <h1 className="text-3xl font-bold">Bag 3</h1>
+        <h1 className="text-3xl font-bold"> {product?.name}</h1>
 
         {/* Rating */}
         <div className="flex items-center gap-1 text-red-500">
@@ -42,47 +104,39 @@ const ProductDetail = () => {
 
         {/* Price */}
         <div className="text-xl font-semibold">
-          <span className="line-through text-gray-400 mr-2">₹120.5</span>
+          <span className="line-through text-gray-400 mr-2">
+            <span>Rs</span> {product?.originalPrice}
+          </span>
           <span className="text-black">₹85</span>
         </div>
 
-        {/* Description */}
-        <p className="text-gray-700">Men Slim Fit Casual Jacket</p>
-
-        {/* Size Selector */}
-        <div>
-          <p className="font-semibold mb-2">Select size</p>
-          <div className="flex gap-3">
-            {sizes.map((size) => (
-              <button
-                key={size}
-                onClick={() => setSelectedSize(size)}
-                className={`px-4 py-2 border rounded ${
-                  selectedSize === size
-                    ? 'bg-gray-900 text-white'
-                    : 'bg-white text-black'
-                }`}
-              >
-                {size}
-              </button>
-            ))}
-          </div>
-        </div>
+        <p>
+          <strong>Category:</strong> {product?.category}
+        </p>
 
         {/* Add to Cart */}
-        <button className="bg-red-500 text-white px-6 py-3 mt-4 rounded hover:bg-red-600 transition">
-          Add to Cart
-        </button>
+        {inCart ? (
+          <div
+            onClick={() => {
+              navigate("/cart");
+            }}
+            className="bg-red-500 cursor-pointer text-white text-center px-6 py-3 mt-4 rounded hover:bg-red-600 transition"
+          >
+            Already In Cart
+          </div>
+        ) : (
+          <button
+            onClick={() => {
+              addToCart();
+            }}
+            className="bg-red-500 cursor-pointer text-white px-6 py-3 mt-4 rounded hover:bg-red-600 transition"
+          >
+            Add to Cart
+          </button>
+        )}
 
         {/* Categories & Tags */}
-        <div className="mt-4 text-gray-700 text-sm">
-          <p>
-            <strong>Category:</strong> Women, T-Shirt, Crop Top
-          </p>
-          <p>
-            <strong>Tags:</strong> Women, Modern, Latest
-          </p>
-        </div>
+        <div className="mt-4 text-gray-700 text-sm"></div>
       </div>
     </div>
   );

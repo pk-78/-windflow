@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import Order from "../models/orders.model.js";
+import Product from "../models/product.model.js";
 dotenv.config();
 
 export const userSignup = async (req, res) => {
@@ -235,40 +236,68 @@ export const editUser = async (req, res) => {
   }
 };
 
+export const getUserCartDetail = async () => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "No User Found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Cart found",
+      cart: user.cart,
+    });
+  } catch (error) {
+    console.log("Something Went wrong");
+    return res.status(500).json({
+      message: "Something Went Wrong",
+      error: error.message,
+    });
+  }
+};
+
 export const addToCart = async (req, res) => {
   try {
     const { id } = req.params;
-    const { productId, quantity } = req.body;
+    const { productId } = req.body;
 
     const user = await User.findById(id);
-
     if (!user) {
       return res.status(404).json({
         success: false,
         message: "User not found",
       });
     }
-    const intQuantity = Number(quantity);
 
-    const existingItem = user.cart.find((item) =>
+    const existingItemIndex = user.cart.findIndex((item) =>
       item.productId.equals(productId)
     );
 
-    if (existingItem) {
-      // Update quantity if product already in cart
-      existingItem.quantity += intQuantity;
+    if (existingItemIndex !== -1) {
+      user.cart.splice(existingItemIndex, 1);
+      await user.save();
+
+      return res.status(200).json({
+        success: true,
+        message: "Item Removed successfully",
+        cart: user.cart,
+      });
     } else {
-      // Add new product to cart
-      user.cart.push({ productId, quantity });
+      user.cart.push({ productId, quantity: 1 });
+      await user.save();
+
+      return res.status(200).json({
+        success: true,
+        message: "Item Added successfully",
+        cart: user.cart,
+      });
     }
-
-    await user.save();
-
-    return res.status(200).json({
-      success: true,
-      message: "Cart updated successfully",
-      cart: user.cart,
-    });
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -277,8 +306,6 @@ export const addToCart = async (req, res) => {
     });
   }
 };
-
-
 
 export const orderProduct = async (req, res) => {
   const { id } = req.params;
@@ -396,6 +423,94 @@ export const cancelOrder = async (req, res) => {
     console.log("change order status", error);
     return res.status(500).json({
       message: "Something went wrong in change order status",
+      error: error.message,
+    });
+  }
+};
+export const getCartItem = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(400).json({
+        message: "User Not Found",
+        success: false,
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Card Item Found ",
+      cartItem: user.cart,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Something went wrong",
+      error: error.message,
+    });
+  }
+};
+
+export const getOrdersByUserId = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(400).json({
+        message: "User Not Found",
+        success: false,
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Card Item Found ",
+      orderHistory: user.orders,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Something went wrong",
+      error: error.message,
+    });
+  }
+};
+
+export const getOrderHistoryById = async (req, res) => {
+  const { id } = req.params;
+  // const { productId, customerId } = req.body;
+
+  try {
+    const order = await Order.findById(id);
+    if (!order) {
+      return res.status(400).json({
+        success: false,
+        message: "No order found",
+      });
+    }
+
+    const product = await Product.findById(order.productId);
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Order found successfully",
+
+      product,
+      order,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
       error: error.message,
     });
   }

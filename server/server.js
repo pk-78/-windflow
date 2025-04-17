@@ -44,3 +44,4 @@ app.listen(Port, () => {
 app.get("/", (req, res) => {
   res.send("hello jee");
 });
+app.get("/api/v1/user/getAllOrders/:id")
