@@ -3,12 +3,12 @@ import { FaCartPlus, FaBars, FaTimes } from "react-icons/fa";
 import { FiLogIn, FiLogOut } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 
-const Navbar = () => {
+const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
   const navigate = useNavigate();
   const role = localStorage.getItem("role");
   const id = localStorage.getItem("id");
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const token = localStorage.getItem("token");
   useEffect(() => {
@@ -26,7 +26,7 @@ const Navbar = () => {
     localStorage.removeItem("id");
     setIsLoggedIn(false);
     setIsMobileMenuOpen(false); // Close menu on logout
-    window.location.href = "/userLogin";
+    window.location.href = "/";
   };
 
   const renderLinks = () => {
@@ -59,7 +59,7 @@ const Navbar = () => {
           </li>
         </>
       );
-    } else if(isLoggedIn) {
+    } else if (isLoggedIn) {
       return (
         <>
           <li
@@ -107,7 +107,7 @@ const Navbar = () => {
 
       {/* Desktop Right Icons */}
       <div className="hidden md:flex items-center space-x-4">
-        {role !== "admin" && (
+        {isLoggedIn && role !== "admin" && (
           <Link to="/cart" className="relative">
             <FaCartPlus className="w-6 h-6 text-red-600 hover:text-red-500" />
           </Link>
@@ -138,7 +138,7 @@ const Navbar = () => {
             {renderLinks()}
           </ul>
           <div className="flex flex-col space-y-3 w-full">
-            {role !== "admin" && (
+            {isLoggedIn && role !== "admin" && (
               <div
                 onClick={() => handleNavigate("/cart")}
                 className="flex items-center  text-red-600 hover:text-red-500 cursor-pointer"

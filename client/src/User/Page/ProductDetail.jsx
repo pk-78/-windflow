@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import url from "../../url/url";
 import toast from "react-hot-toast";
 
-const ProductDetail = () => {
+const ProductDetail = ({ isLoggedIn }) => {
   const [selectedSize, setSelectedSize] = useState("M");
   const [product, setProduct] = useState(null);
   const { id } = useParams();
@@ -39,7 +39,6 @@ const ProductDetail = () => {
         const cartItem = response?.data?.cartItem;
 
         setInCart(cartItem.some((item) => item.productId === id));
-        
       } catch (error) {
         console.log(error);
       }
@@ -115,7 +114,17 @@ const ProductDetail = () => {
         </p>
 
         {/* Add to Cart */}
-        {inCart ? (
+
+        {!isLoggedIn ? (
+          <button
+            onClick={() => {
+              navigate("/userLogin");
+            }}
+            className="bg-red-500 cursor-pointer text-white text-center px-6 py-3 mt-4 rounded hover:bg-red-600 transition"
+          >
+            Log In to add items In Cart
+          </button>
+        ) : inCart ? (
           <div
             onClick={() => {
               navigate("/cart");
