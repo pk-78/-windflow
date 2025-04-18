@@ -7,6 +7,7 @@ import {
   getCartItem,
   getOrderHistoryById,
   getOrdersByUserId,
+  getUserAddress,
   getUserCartDetail,
   orderProduct,
   updateAddress,
@@ -18,6 +19,7 @@ const router = express.Router();
 
 router.post("/userSignup", userSignup);
 router.put("/updateAddress/:id", updateAddress);
+router.get("/getUserAddress/:id",getUserAddress)
 router.put("/editUser/:id", editUser);
 router.post("/userLogin", userLogin);
 router.post("/addToCart/:id", addToCart);

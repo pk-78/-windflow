@@ -59,12 +59,12 @@ export default function MyOrder() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100 p-6">
       <div className="max-w-5xl mx-auto">
-        <h1 className="text-4xl font-bold text-purple-800 mb-10 text-center drop-shadow-md">
+        <h1 className="text-2xl font-bold text-purple-800 mb-10 text-center drop-shadow-md">
           <FaBoxOpen className="inline mb-1 mr-2" />
           My Order History
         </h1>
 
-        {orders.map((order, key) => {
+        {orders?.length<1?<div className="text-xl text-center">No Order History</div>:orders.map((order, key) => {
           const orderTime = new Date(order.order.createdAt).toLocaleString(
             "en-IN",
             {

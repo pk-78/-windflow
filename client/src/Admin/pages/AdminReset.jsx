@@ -90,7 +90,7 @@ const AdminReset = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-500 transition"
+            className="w-full bg-red-600 cursor-pointer text-white py-2 rounded-lg hover:bg-red-500 transition"
           >
             Update Password
           </button>

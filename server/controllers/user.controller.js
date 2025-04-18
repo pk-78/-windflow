@@ -120,13 +120,43 @@ export const userLogin = async (req, res) => {
   }
 };
 
+export const getUserAddress = async(req, res)=>{
+
+  const {id}= req.params;
+  try {
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password",
+      });
+    }
+    return res.status(200).json({
+      success:true,
+      message:"Address Fetched Successfully",
+      address:user.address
+    })
+
+    
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error in user getting address",
+      error: error.message,
+    });
+    
+  }
+}
 //address update
 
 export const updateAddress = async (req, res) => {
-  try {
-    const { id } = req.params;
+  const { id } = req.params;
     const { name, mobileNumber, fullAddress, landmark, city, state, pincode } =
       req.body;
+  console.log( name,mobileNumber, fullAddress, landmark, city, state, pincode)
+  try {
+    
 
     if (!name || !mobileNumber || !fullAddress || !city || !state || !pincode) {
       return res.status(400).json({

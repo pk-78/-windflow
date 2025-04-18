@@ -13,12 +13,13 @@ import { Toaster } from "react-hot-toast";
 import ProductDetail from "./User/Page/ProductDetail";
 import Cart from "./User/Page/Cart"; // <-- Make sure to import your Cart page
 
-import AdminHomePage from "./Admin/pages/AdminHomePage";
+import AdminHomePage from "./Admin/pages/AdminOrderPage";
 import ViewOrder from "./Admin/pages/ViewOrder";
 import AddProduct from "./Admin/pages/AddProduct";
 import AllProduct from "./Admin/pages/AllProduct";
 import EditProduct from "./Admin/pages/EditProduct";
 import MyOrder from "./User/Page/MyOrder";
+import AdminOrderPage from "./Admin/pages/AdminOrderPage";
 
 function App() {
   return (
@@ -39,12 +40,13 @@ function App() {
       </Routes>
       <Routes>
         <Route path="/adminLogin" element={<AdminLogin />} />
+        {/* <Route path="/" element={<AdminLogin />} /> */}
         <Route path="/adminSignup" element={<AdminSignupPage />} />
         <Route path="/adminReset" element={<AdminReset />} />
-        <Route path="/adminHome" element={<AdminHomePage />} />
+        <Route path="/adminHome" element={<AllProduct  />} />
         <Route path="/viewOrder/:id" element={<ViewOrder />} />
         <Route path="/addProduct" element={<AddProduct />} />
-        <Route path="/allProduct" element={<AllProduct />} />
+        <Route path="/allProduct" element={<AdminOrderPage />} />
         <Route path="/editProduct/:id" element={<EditProduct />} />
       </Routes>
     </>

@@ -70,7 +70,7 @@ const ProductDetail = () => {
   console.log(inCart);
 
   return (
-    <div className="flex flex-col lg:flex-row gap-10 p-6 lg:p-16 bg-white">
+    <div className="flex flex-col lg:flex-row gap-10 p-6 lg:p-16 bg-gray-50">
       {/* Left Images */}
       <div className="flex flex-col items-center gap-4">
         {product?.images?.map((img, i) => (

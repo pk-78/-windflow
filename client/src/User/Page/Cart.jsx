@@ -2,10 +2,15 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import url from "../../url/url";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const id = localStorage.getItem("id");
   const [cartProducts, setCartProducts] = useState([]);
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [address, setAddress] = useState("");
+  const navigate = useNavigate();
+  console.log(id);
 
   useEffect(() => {
     const getCart = async () => {
@@ -30,8 +35,22 @@ const Cart = () => {
       }
     };
 
+    const getUserData = async () => {
+      try {
+        const response = await axios.get(
+          `${url}/api/v1/user/getUserAddress/${id}`
+        );
+        console.log(response?.data?.address);
+        setAddress(response?.data?.address);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     getCart();
+    getUserData();
   }, []);
+  // console.log(address);
 
   const updateQuantity = (productId, newQty) => {
     setCartProducts((prev) =>
@@ -67,8 +86,8 @@ const Cart = () => {
   );
 
   return (
-    <div className="p-6 max-w-6xl mx-auto bg-gradient-to-br from-pink-50 to-purple-100 min-h-screen">
-      <h1 className="text-4xl font-extrabold text-center text-purple-700 mb-10 drop-shadow">
+    <div className="p-2 max-w-6xl mx-auto bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+      <h1 className="text-2xl font-extrabold text-center text-purple-700 mb-10 drop-shadow">
         🛍️ Your Shopping Cart
       </h1>
 
@@ -135,11 +154,96 @@ const Cart = () => {
               </div>
             </div>
           ))}
+          <div className="p-6 mx-auto  rounded-2xl shadow-md bg-gradient-to-br from-blue-50 to-indigo-100 border border-indigo-200">
+            <div className="flex justify-between border-b-2 border-indigo-300">
+              <h2 className="text-2xl font-bold text-indigo-800 mb-1  pb-1">
+                📍 Address Details
+              </h2>
+              <button
+                onClick={() => {
+                  navigate("/userReset");
+                }}
+                className="bg-indigo-800 text-white rounded-md px-1 py-1 cursor-pointer my-1"
+              >
+                Edit Address
+              </button>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-800">
+              <div>
+                <p className="text-indigo-700 font-semibold">Name</p>
+                <p className="text-gray-900">{address?.name} </p>
+              </div>
 
-          <div className="text-right mt-10">
-            <h2 className="text-4xl font-extrabold text-purple-800">
+              <div>
+                <p className="text-indigo-700 font-semibold">Mobile Number</p>
+                <p className="text-gray-900">{address?.mobileNumber}</p>
+              </div>
+
+              <div className="sm:col-span-2">
+                <p className="text-indigo-700 font-semibold">Full Address</p>
+                <p className="text-gray-900">{address?.fullAddress}</p>
+              </div>
+
+              <div>
+                <p className="text-indigo-700 font-semibold">Landmark</p>
+                <p className="text-gray-900">{address?.landmark}</p>
+              </div>
+
+              <div>
+                <p className="text-indigo-700 font-semibold">City</p>
+                <p className="text-gray-900">{address?.city}</p>
+              </div>
+
+              <div>
+                <p className="text-indigo-700 font-semibold">State</p>
+                <p className="text-gray-900">{address?.state}</p>
+              </div>
+
+              <div>
+                <p className="text-indigo-700 font-semibold">Pincode</p>
+                <p className="text-gray-900">{address?.pincode}</p>
+              </div>
+            </div>
+          </div>
+          <h4 className="text-red-500 text-lg">
+            Please check your Address before Proceed
+          </h4>
+
+          <div className="text-right ">
+            <h2 className="text-xl font-extrabold text-purple-800">
               Total: <span className="text-pink-600">₹{totalPrice}</span>
             </h2>
+          </div>
+          <div>
+  <h4 className="text-lg font-semibold mb-2">Choose Payment Method</h4>
+  <div className="flex flex-col gap-2">
+    <label className="flex items-center gap-2">
+    <input
+  type="radio"
+  name="paymentMethod"
+  value="cod"
+  checked={paymentMethod === "cod"}
+  onChange={(e) => setPaymentMethod(e.target.value)}
+/>
+      Cash On Delivery (COD)
+    </label>
+    <label className="flex items-center gap-2">
+    <input
+  type="radio"
+  name="paymentMethod"
+  value="online"
+  checked={paymentMethod === "online"}
+  onChange={(e) => setPaymentMethod(e.target.value)}
+/>
+      Online (UPI)
+    </label>
+  </div>
+</div>
+
+          <div className="text-right ">
+            <button className="bg-green-500 text-white rounded-md px-2 py-1">
+              Proceed
+            </button>
           </div>
         </div>
       )}

@@ -12,6 +12,7 @@ import { FaShoppingBag, FaClock, FaThLarge } from "react-icons/fa";
 
 export default function Home() {
   const allProduct = useSelector((state) => state.product.allProduct);
+  const [searchedTerm, setSearchedTerm]= useState("")
 
   const [selectedCategory, setSelectedCategory] = useState("all");
   const navigate = useNavigate();
@@ -23,13 +24,24 @@ export default function Home() {
   //     useGetAllProduct(dispatch);
   //   }
   // }, [allProduct, dispatch]);
+
+  const filterItems = allProduct.filter((item)=>
+  item?.name.toLowerCase().includes(searchedTerm.toLowerCase()))
+  console.log(filterItems)
   return (
     <div>
       <div className="min-h-screen bg-gray-50 p-6">
+        <div className="flex items-center px-4 py-2 mb-2 w-full max-w-md mx-auto border border-blue-500 rounded-full shadow-sm hover:shadow-md transition cursor-pointer">
+          <input
+            type="text"
+            value={searchedTerm}
+            onChange={(e)=>{setSearchedTerm(e.target.value)}}
+            placeholder="Search Item"
+            className="w-full bg-transparent focus:outline-none text-gray-700 placeholder-gray-400"
+          />
+        </div>
+
         <div className="mb-8">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-            Filter by Category
-          </h2>
           <div className="flex flex-wrap gap-3">
             {[
               {
@@ -65,8 +77,8 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {allProduct &&
-          allProduct.filter((product) =>
+          {filterItems &&
+          filterItems.filter((product) =>
             selectedCategory === "all"
               ? true
               : product.category.toLowerCase() === selectedCategory
@@ -75,7 +87,7 @@ export default function Home() {
               No products found in "{selectedCategory}" category.
             </div>
           ) : (
-            allProduct
+            filterItems
               ?.filter((product) =>
                 selectedCategory === "all"
                   ? true
@@ -89,7 +101,7 @@ export default function Home() {
                   <div className="bg-white p-4 rounded-lg shadow hover:shadow-lg transition-all min-h-[520px] flex flex-col cursor-pointer">
                     <img
                       src={product?.mainImage?.url}
-                      alt={product.name||"Product Image"}
+                      alt={product.name || "Product Image"}
                       className="w-full h-[400px] object-cover rounded-md mb-1"
                     />
                     <h2 className="text-xl font-semibold mb-1">

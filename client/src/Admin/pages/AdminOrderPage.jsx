@@ -19,7 +19,7 @@ const statusColors = {
   delivered: "bg-green-100 border-green-400 text-green-700",
 };
 
-export default function AdminHomePage() {
+export default function AdminOrderPage() {
   const dispatch = useDispatch();
 
   const {pendingOrders, shippedOrders,deliveredOrders,cancelledOrders,allProduct} = useSelector((state) => state.product);
@@ -88,7 +88,7 @@ export default function AdminHomePage() {
           <button
             key={stat}
             onClick={() => setStatus(stat)}
-            className={`capitalize px-4 py-2 text-sm sm:text-base rounded-full border font-medium ${
+            className={`capitalize px-4 py-2 cursor-pointer text-sm sm:text-base rounded-full border font-medium ${
               status === stat
                 ? `${statusColors[stat]}`
                 : "bg-white border-gray-300 text-gray-600 hover:bg-gray-100"

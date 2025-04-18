@@ -74,10 +74,10 @@ export default function UserLogin() {
           </div>
           <button
             type="submit"
-            className="w-full bg-red-600 text-white py-2 rounded-xl hover:bg-red-500 transition duration-200"
+            className="w-full bg-red-600 cursor-pointer text-white py-2 rounded-xl hover:bg-red-500 transition duration-200"
           >
             <div className="flex justify-center items-center">
-              {loading ? <div class="loader"></div> : "Login"}
+              {loading ? <div className="loader"></div> : "Login"}
             </div>
           </button>
         </form>
