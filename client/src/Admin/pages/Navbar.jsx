@@ -96,7 +96,10 @@ const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
 
       {/* Mobile Menu Toggle */}
       <div className="md:hidden">
-        <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="cursor-pointer"
+        >
           {isMobileMenuOpen ? (
             <FaTimes className="w-6 h-6 text-red-600" />
           ) : (

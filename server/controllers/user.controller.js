@@ -337,9 +337,41 @@ export const addToCart = async (req, res) => {
   }
 };
 
+
+
+export const emptyCart = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await User.findByIdAndUpdate(
+      id,
+      { cart: [] },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Cart emptied successfully",
+      user,
+    });
+  } catch (error) {
+    console.error("Error emptying cart:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong while emptying cart",
+      error: error.message,
+    });
+  }
+};
+
+
 export const orderProduct = async (req, res) => {
   const { id } = req.params;
-  const { productId, quantity } = req.body;
+  const { productId, quantity, paymentMethod,paymentId } = req.body;
 
   try {
     if (!productId || !quantity) {
@@ -361,6 +393,8 @@ export const orderProduct = async (req, res) => {
       customerId: id,
       productId,
       quantity,
+      paymentMethod,
+      paymentId,
       orderstatus: "pending",
     });
 

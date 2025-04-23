@@ -9,6 +9,7 @@ const Cart = () => {
   const [cartProducts, setCartProducts] = useState([]);
   const [paymentMethod, setPaymentMethod] = useState("");
   const [address, setAddress] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   console.log(id);
 
@@ -84,6 +85,45 @@ const Cart = () => {
     (acc, item) => acc + item.product.originalPrice * item.quantity,
     0
   );
+
+  const handleOrder = async () => {
+    if (!paymentMethod) {
+      toast.error("Please select a payment method");
+      return;
+    }
+    setLoading(true);
+
+    try {
+      // Prepare data for each product in cart
+      const orders = cartProducts.map((item) => ({
+        productId: item.product._id,
+        quantity: item.quantity,
+        paymentMethod,
+        paymentId:
+          paymentMethod === "online" ? "some-online-payment-id" : "COD", // replace as per integration
+      }));
+
+      // Make post request for each item
+      for (const order of orders) {
+        const response = await axios.post(
+          `${url}/api/v1/user/orderProduct/${id}`,
+          order
+        );
+        console.log("Order Response:", response.data);
+      }
+
+      toast.success("Order placed successfully!");
+      const response = await axios.put(`${url}/api/v1/user/emptyCart/${id}`);
+
+      console.log(response);
+      // setCartProducts([])
+      navigate(`/orderHistory/${id}`); // or wherever you want to go after placing the order
+    } catch (error) {
+      console.error("Order error:", error);
+      toast.error("Failed to place order");
+    }
+    setLoading(false);
+  };
 
   return (
     <div className="p-2 max-w-6xl mx-auto bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
@@ -215,34 +255,39 @@ const Cart = () => {
             </h2>
           </div>
           <div>
-  <h4 className="text-lg font-semibold mb-2">Choose Payment Method</h4>
-  <div className="flex flex-col gap-2">
-    <label className="flex items-center gap-2">
-    <input
-  type="radio"
-  name="paymentMethod"
-  value="cod"
-  checked={paymentMethod === "cod"}
-  onChange={(e) => setPaymentMethod(e.target.value)}
-/>
-      Cash On Delivery (COD)
-    </label>
-    <label className="flex items-center gap-2">
-    <input
-  type="radio"
-  name="paymentMethod"
-  value="online"
-  checked={paymentMethod === "online"}
-  onChange={(e) => setPaymentMethod(e.target.value)}
-/>
-      Online (UPI)
-    </label>
-  </div>
-</div>
+            <h4 className="text-lg font-semibold mb-2">
+              Choose Payment Method
+            </h4>
+            <div className="flex flex-col gap-2">
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="cod"
+                  checked={paymentMethod === "cod"}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                />
+                Cash On Delivery (COD)
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="online"
+                  checked={paymentMethod === "online"}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                />
+                Online (UPI)
+              </label>
+            </div>
+          </div>
 
           <div className="text-right ">
-            <button className="bg-green-500 text-white rounded-md px-2 py-1">
-              Proceed
+            <button
+              className="bg-green-500 cursor-pointer text-white rounded-md px-2 py-1"
+              onClick={handleOrder}
+            >
+              {loading ? "Please wait" : "Place Order"}
             </button>
           </div>
         </div>

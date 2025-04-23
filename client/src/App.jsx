@@ -61,9 +61,9 @@ function App() {
           <Route path="/cart" element={<Cart />} />
         </Route>
         <Route
-            path="/productDetail/:id"
-            element={<ProductDetail isLoggedIn={isLoggedIn} />}
-          />
+          path="/productDetail/:id"
+          element={<ProductDetail isLoggedIn={isLoggedIn} />}
+        />
         <Route path="/" element={<UserHomePage />} />
       </Routes>
 
@@ -100,6 +100,7 @@ function App() {
           <Route path="/editProduct/:id" element={<EditProduct />} />
         </Route>
         {/* <Route path="*" element={<UserHomePage />} /> */}
+        {/* <Route path="/" element={<AdminLogin />} />  */}
       </Routes>
     </>
   );

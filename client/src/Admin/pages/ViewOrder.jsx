@@ -11,6 +11,7 @@ export default function ViewOrder() {
   console.log(id);
 
   const [status, setStatus] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const getorderDetail = async () => {
@@ -31,6 +32,7 @@ export default function ViewOrder() {
     getorderDetail();
   }, []);
   const handleStatusChange = async () => {
+    setLoading(true);
     try {
       const response = await axios.post(
         `${url}/api/v1/admin/orders/orderStatus`,
@@ -52,6 +54,7 @@ export default function ViewOrder() {
     } catch (error) {
       console.log(error);
     }
+    setLoading(false);
   };
 
   return (
@@ -94,12 +97,18 @@ export default function ViewOrder() {
         </h2>
         <div className="flex flex-col md:flex-row justify-between gap-4">
           <div className="space-y-1">
-            <span className="text-gray-700">
+            <div className="text-gray-700">
               Quantity: {viewOrder?.order?.quantity}
-            </span>
-            <span className="text-gray-700">
+            </div>
+            <div className="text-gray-700">
               Status: {viewOrder?.order?.orderStatus}
-            </span>
+            </div>
+            <div className="text-gray-700">
+              Payment Method: {viewOrder?.order?.paymentMethod}
+            </div>
+            <div className="text-gray-700">
+              Payment Id: {viewOrder?.order?.paymentId}
+            </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
             <select
@@ -115,9 +124,9 @@ export default function ViewOrder() {
 
             <button
               onClick={handleStatusChange}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition w-full sm:w-auto"
+              className="bg-blue-600 text-white px-4 cursor-pointer py-2 rounded hover:bg-blue-700 transition w-full sm:w-auto"
             >
-              Update Status
+              {loading ? "Updating...." : "Update Status"}
             </button>
           </div>
         </div>

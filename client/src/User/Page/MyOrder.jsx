@@ -9,13 +9,16 @@ import {
   FaClock,
   FaHashtag,
 } from "react-icons/fa";
+// import "./MyOrder.css"; // make sure this CSS file exists
 
 export default function MyOrder() {
   const id = localStorage.getItem("id");
   const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const getOrderHistory = async () => {
+      setLoading(true);
       try {
         const response = await axios.get(
           `${url}/api/v1/user/getOrdersHistory/${id}`
@@ -31,11 +34,15 @@ export default function MyOrder() {
           const { order, product } = res.data;
           return { order, product };
         });
+        const sortedOrder = detailedOrders?.sort(
+          (b, a) => new Date(a.order.createdAt) - new Date(b.order.createdAt)
+        );
 
-        setOrders(detailedOrders);
+        setOrders(sortedOrder);
       } catch (error) {
         console.log(error);
       }
+      setLoading(false);
     };
 
     getOrderHistory();
@@ -55,6 +62,7 @@ export default function MyOrder() {
         return "text-gray-600";
     }
   };
+  console.log(orders);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100 p-6">
@@ -64,72 +72,82 @@ export default function MyOrder() {
           My Order History
         </h1>
 
-        {orders?.length<1?<div className="text-xl text-center">No Order History</div>:orders.map((order, key) => {
-          const orderTime = new Date(order.order.createdAt).toLocaleString(
-            "en-IN",
-            {
-              dateStyle: "medium",
-              timeStyle: "short",
-            }
-          );
+        {loading ? (
+          <div className="flex justify-center items-center min-h-[50vh]">
+            <div>Please Wait While we are fetching orders</div>
+          </div>
+        ) : orders?.length < 1 ? (
+          <div className="text-xl text-center">No Order History</div>
+        ) : (
+          orders.map((order, key) => {
+            const orderTime = new Date(order.order.createdAt).toLocaleString(
+              "en-IN",
+              {
+                dateStyle: "medium",
+                timeStyle: "short",
+              }
+            );
 
-          return (
-            <div
-              key={key}
-              className="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 flex flex-col md:flex-row items-center gap-6 border border-purple-200 mb-6"
-            >
-              <div className="w-32 h-32 flex-shrink-0 rounded-xl overflow-hidden border border-pink-300 shadow-sm">
-                <img
-                  src={order?.product?.mainImage?.url}
-                  alt="Product"
-                  className="w-full h-full object-cover"
-                />
-              </div>
+            return (
+              <div
+                key={key}
+                className="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 flex flex-col md:flex-row items-center gap-6 border border-purple-200 mb-6"
+              >
+                <div className="w-32 h-32 flex-shrink-0 rounded-xl overflow-hidden border border-pink-300 shadow-sm">
+                  <img
+                    src={order?.product?.mainImage?.url}
+                    alt="Product"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
 
-              <div className="flex flex-col gap-2 text-gray-700 w-full">
-                <p className="text-xl font-semibold text-purple-700">
-                  <FaBoxOpen className="inline mb-1 mr-1" />
-                  Order Name:{" "}
-                  <span className="font-medium">{order?.product?.name}</span>
-                </p>
-                <p>
-                  <FaRupeeSign className="inline mb-1 mr-1" />
-                  Price:{" "}
-                  <span className="font-medium">
-                    ₹{order?.product?.originalPrice}
-                  </span>
-                </p>
-                <p>
-                  <FaTags className="inline mb-1 mr-1" />
-                  Category:{" "}
-                  <span className="font-medium">
-                    {order?.product?.category}
-                  </span>
-                </p>
-                <p>
-                  <FaTruck className="inline mb-1 mr-1" />
-                  Status:{" "}
-                  <span
-                    className={`font-medium ${getStatusColor(
-                      order?.order?.orderStatus
-                    )}`}
-                  >
-                    {order?.order?.orderStatus}
-                  </span>
-                </p>
-                <p>
-                  <FaClock className="inline mb-1 mr-1" />
-                  Order Time: <span className="font-medium">{orderTime}</span>
-                </p>
-                <p>
-                  <FaHashtag className="inline mb-1 mr-1" />
-                  Quantity:{" "}
-                  <span className="font-medium">{order?.order?.quantity}</span>
-                </p>
+                <div className="flex flex-col gap-2 text-gray-700 w-full">
+                  <p className="text-xl font-semibold text-purple-700">
+                    <FaBoxOpen className="inline mb-1 mr-1" />
+                    Order Name:{" "}
+                    <span className="font-medium">{order?.product?.name}</span>
+                  </p>
+                  <p>
+                    <FaRupeeSign className="inline mb-1 mr-1" />
+                    Price:{" "}
+                    <span className="font-medium">
+                      ₹{order?.product?.originalPrice}
+                    </span>
+                  </p>
+                  <p>
+                    <FaTags className="inline mb-1 mr-1" />
+                    Category:{" "}
+                    <span className="font-medium">
+                      {order?.product?.category}
+                    </span>
+                  </p>
+                  <p>
+                    <FaTruck className="inline mb-1 mr-1" />
+                    Status:{" "}
+                    <span
+                      className={`font-medium ${getStatusColor(
+                        order?.order?.orderStatus
+                      )}`}
+                    >
+                      {order?.order?.orderStatus}
+                    </span>
+                  </p>
+                  <p>
+                    <FaClock className="inline mb-1 mr-1" />
+                    Order Time: <span className="font-medium">{orderTime}</span>
+                  </p>
+                  <p>
+                    <FaHashtag className="inline mb-1 mr-1" />
+                    Quantity:{" "}
+                    <span className="font-medium">
+                      {order?.order?.quantity}
+                    </span>
+                  </p>
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })
+        )}
       </div>
     </div>
   );

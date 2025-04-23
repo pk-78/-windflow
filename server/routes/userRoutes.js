@@ -3,6 +3,7 @@ import {
   addToCart,
   cancelOrder,
   editUser,
+  emptyCart,
   getAllOrders,
   getCartItem,
   getOrderHistoryById,
@@ -23,6 +24,7 @@ router.get("/getUserAddress/:id",getUserAddress)
 router.put("/editUser/:id", editUser);
 router.post("/userLogin", userLogin);
 router.post("/addToCart/:id", addToCart);
+router.put("/emptyCart/:id", emptyCart);
 router.post("/orderProduct/:id", orderProduct);
 router.get("/getAllOrders/:id", getAllOrders);
 router.post("/cancelOrder/:id", cancelOrder);

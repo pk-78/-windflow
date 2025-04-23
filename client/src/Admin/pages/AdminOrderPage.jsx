@@ -75,7 +75,8 @@ export default function AdminOrderPage() {
     }
   };
 
-  const currentOrders = getCurrentOrders();
+  const currentOrders = getCurrentOrders()?.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6 md:p-8">
